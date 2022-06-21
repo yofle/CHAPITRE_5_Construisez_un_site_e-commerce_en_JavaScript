@@ -72,19 +72,18 @@ function getproducts() {
           //... création du produit qui sera ajouté au panier 
           let productAdded = {
             name: producttitle.innerHTML,
-            price: productPrice.innerHTML,
-            quantity:sofaquantity.value,
+            price: (productPrice.innerHTML * sofaquantity.value),
+            quantity: sofaquantity.value,
             color: (document.querySelector("select").value),
             image: (productimg.src),
-            //_id: id,
+            _id: id,
           };
     
           //Tableau du localstorage
           let arrayProductsInCart = [];
-          
 
         // Si le localStorage existe, on récupère son contenu (parse) , on l'insère dans le tableau arrayProductsInCart, puis on le renvoit vers le localStorage avec le nouveau produit ajouté.
-        if (localStorage.getItem("products") !== 0) {
+        if (localStorage.getItem("products") !== null) {
             arrayProductsInCart = JSON.parse(localStorage.getItem("products"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
           } 
 
@@ -92,7 +91,11 @@ function getproducts() {
         arrayProductsInCart.push(productAdded); //on ajoute avec .push le produit au tableau
         localStorage.setItem("products", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
 
-          messageerreur.style.opacity = "0"
+        //Actualiser le changement 
+        alert("Ce produit à été ajouté au panier");
+        window.location.href = "cart.html";
+
+        messageerreur.style.opacity = "0"
       } 
       
       else {//si la quantité de produit n'est pas comprise entre 1-99 alors un message d'erreur apparait
