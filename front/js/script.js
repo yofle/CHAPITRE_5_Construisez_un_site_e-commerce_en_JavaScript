@@ -1,6 +1,6 @@
 main(); /* fonction principal synchrone*/ 
 
-function main()/*la fonction princiapal englobe la fonction getapi*/ {
+function main()/*la fonction principale englobe la fonction getapi*/ {
   getAPI();
 }
 function getAPI() /*On va chercher l'Api avec fetch et on lui donne 2 issus, sois affichage, sois erreur*/{

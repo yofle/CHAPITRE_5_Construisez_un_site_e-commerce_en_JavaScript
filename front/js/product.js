@@ -67,7 +67,7 @@ function getproducts() {
     addToCartBtn.addEventListener("click", () => { 
 
         //si la valeur est comprise entre 0 et 100 alors ... 
-        if (sofaquantity.value > 0 && sofaquantity.value < 100) {
+        if ((sofaquantity.value > 0 && sofaquantity.value < 100) && ((document.querySelector("select").value) != "" )) {
           
           //... création du produit qui sera ajouté au panier 
           let productAdded = {
@@ -83,13 +83,13 @@ function getproducts() {
           let arrayProductsInCart = [];
 
         // Si le localStorage existe, on récupère son contenu (parse) , on l'insère dans le tableau arrayProductsInCart, puis on le renvoit vers le localStorage avec le nouveau produit ajouté.
-        if (localStorage.getItem("products") !== null) {
-            arrayProductsInCart = JSON.parse(localStorage.getItem("products"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
+        if (localStorage.getItem("product-ID") !== null) {
+            arrayProductsInCart = JSON.parse(localStorage.getItem("product-ID"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
           } 
 
         //Ajout des produits au panier
         arrayProductsInCart.push(productAdded); //on ajoute avec .push le produit au tableau
-        localStorage.setItem("products", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
+        localStorage.setItem("product-ID", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
 
         //Actualiser le changement 
         alert("Ce produit à été ajouté au panier");
@@ -99,7 +99,7 @@ function getproducts() {
       } 
       
       else {//si la quantité de produit n'est pas comprise entre 1-99 alors un message d'erreur apparait
-          messageerreur.innerText = "La quantité de produit n'est pas respecté!";
+          messageerreur.innerText = "La quantité de produit n'est pas respectée ou la couleur n'est pas sélectionnée!";
           messageerreur.style.opacity = "1"
           messageerreur.style.textAlign = "center"
           messageerreur.style.fontSize = "20px";

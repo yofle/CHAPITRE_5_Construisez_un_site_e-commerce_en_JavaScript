@@ -1,4 +1,4 @@
-let objLinea =localStorage.getItem("products")
+let objLinea =localStorage.getItem("product-ID")
 let objJson = JSON.parse(objLinea); 
 
 main();
@@ -7,13 +7,14 @@ main();
     createcart();
     SupprProductCart();
     PriceQuantity();
+    Formulaire ();
     
   }
 
   function createcart() {
 
     // Si le tableau copié du localStorage contient au moins un objet, on affiche le panier et on supprime le message d'erreur.
-    if (localStorage.getItem("products")) {
+    if (localStorage.getItem("product-ID")) {
     }
 
     for (let produit in objJson) {
@@ -98,6 +99,7 @@ main();
         deleteItem.classList.add("deleteItem");
         deleteItem.innerHTML = "Supprimer";
         }    
+
         
   }
 
@@ -121,7 +123,7 @@ main();
         && (élément.color !== id_selectionner_suppression));//tri en fonction de la couleur et de l'id
 
         //Envoie du changement au local storage
-        localStorage.setItem("products", JSON.stringify(objJson))
+        localStorage.setItem("product-ID", JSON.stringify(objJson))
 
         //Actualiser le changement 
         alert("Ce produit à été supprimer");
@@ -166,9 +168,9 @@ main();
             quantity: sofaquantity.value,
           };
           arrayProductsInCart.push(change); //on ajoute avec .push le produit au tableau
-          localStorage.setItem("products", JSON.stringify(arrayProductsInCart));
+          localStorage.setItem("product-ID", JSON.stringify(arrayProductsInCart));
         }
-        window.location.href = "cart.html";
+        window.location.href = "cart.html" ;
       })
     
 
@@ -199,5 +201,122 @@ main();
       Prixfinal.innerHTML = prixTotalPanier;
   }
 
+  function Formulaire () { 
+    //stockage des information du formulaire dans le localStorage
+    const btncommander = document.querySelector("#order");
+
+    btncommander.addEventListener("click", (event)=>{
+    event.preventDefault();
+
+    //Récupération des valeurs du formulaires
+    
+      let formfirstName =document.querySelector("#firstName").value;
+      let formlastName = document.querySelector("#lastName").value;
+      let formaddress = document.querySelector("#address").value;
+      let formcity = document.querySelector("#city").value;
+      let formemail = document.querySelector("#email").value;
+    
+
+    //Paramètre du formulaire
+
+    //Pour le FirstName
+    function FirstNamecontrole(){
+      const firstNamesec = formfirstName;
+      if(/^[A-Za-z|\s]+$/.test(firstNamesec)){
+      return true;  
+      }else{
+        alert("Des caractères ne sont pas autorisés")
+        return false;
+      }
+    }
+
+    //Pour le LastName
+    function lastNamecontrole(){
+      const lastNamesec = formlastName;
+      if(/^[A-Za-z|\s]+$/.test(lastNamesec)){
+      return true;  
+      }else{
+        alert("Des caractères ne sont pas autorisés")
+        return false;
+      }
+    }
+
+    function adressecontrole(){
+      const adressesec = formaddress;
+      if(/^[A-Za-z0-9|\s]+$/.test(adressesec)){
+      return true;  
+      }else{
+        alert("Des caractères ne sont pas autorisés")
+        return false;
+      }
+    }
+
+    //Pour la ville
+    function citycontrole(){
+      const citysec = formcity;
+      if(/^[A-Za-z|\s]+$/.test(citysec)){
+      return true;  
+      }else{
+        alert("Des caractères ne sont pas autorisés")
+        return false;
+      }
+    }
+
+    //Pour l'email
+    function Emailcontrol(){
+      const emailsec = formemail;
+      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailsec)){
+          return true;
+        }else{
+          alert("Votre adresse E-mail n'est pas valide!")
+          return false;
+        }
+    }
+
+      if(FirstNamecontrole() && lastNamecontrole() && citycontrole() && Emailcontrol() && adressecontrole()){
+
+        let productsIDacheté = [];
+        productsIDacheté.push(objJson);
+
+        const order = {
+          contact: {
+          firstName : formfirstName,
+          lastName : formlastName,
+          city : formcity,
+          address : formaddress,
+          email : formemail,
+        },
+          products : [objJson],
+        }
+
+        const options = {
+          method: "POST",
+          body: JSON.stringify(order),
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        };
+//--------------------
 
 
+
+      // Envoie de la requête avec l'en-tête. On changera de page avec un localStorage qui ne contiendra plus que l'order id et le prix.
+      fetch('http://localhost:3000/api/products/order', options)
+        .then((response) => response.json())
+        .then((data) => {
+          //localStorage.clear();
+          console.log(data)
+          localStorage.setItem("orderId", data.orderId);
+
+          //  On peut commenter cette ligne pour vérifier le statut 201 de la requête fetch. Le fait de préciser la destination du lien ici et non dans la balise <a> du HTML permet d'avoir le temps de placer les éléments comme l'orderId dans le localStorage avant le changement de page.
+           document.location.href = "confirmation.html";
+        })
+        .catch((err) => {
+          alert("Il y a eu une erreur : " + err);
+        });
+
+//-------------------------
+      }
+    })
+  }
+
+
+    
