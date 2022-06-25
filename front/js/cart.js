@@ -139,7 +139,7 @@ main();
     console.log(QuantitéTotalPanier);
 
     //ramener les information du panier
-    for (let q = 0; q < objJson.length; q++){;
+    for (let q = 0; q < objJson.length; q++){
       let Quantitédeproduit = objJson[q].quantity;
       
       //mettre les prix du panier dans le "let prixTotalPanier"
@@ -205,23 +205,23 @@ main();
     //stockage des information du formulaire dans le localStorage
     const btncommander = document.querySelector("#order");
 
-    btncommander.addEventListener("click", (event)=>{
-    event.preventDefault();
-
     //Récupération des valeurs du formulaires
-    
-      let formfirstName =document.querySelector("#firstName").value;
-      let formlastName = document.querySelector("#lastName").value;
-      let formaddress = document.querySelector("#address").value;
-      let formcity = document.querySelector("#city").value;
-      let formemail = document.querySelector("#email").value;
-    
+        
+    let formfirstName =document.querySelector("#firstName");
+    let formlastName = document.querySelector("#lastName");
+    let formaddress = document.querySelector("#address");
+    let formcity = document.querySelector("#city");
+    let formemail = document.querySelector("#email");
+
+
+    btncommander.addEventListener("click", (event)=>{
+    //event.preventDefault();
 
     //Paramètre du formulaire
 
     //Pour le FirstName
     function FirstNamecontrole(){
-      const firstNamesec = formfirstName;
+      const firstNamesec = formfirstName.value;
       if(/^[A-Za-z|\s]+$/.test(firstNamesec)){
       return true;  
       }else{
@@ -232,7 +232,7 @@ main();
 
     //Pour le LastName
     function lastNamecontrole(){
-      const lastNamesec = formlastName;
+      const lastNamesec = formlastName.value;
       if(/^[A-Za-z|\s]+$/.test(lastNamesec)){
       return true;  
       }else{
@@ -242,7 +242,7 @@ main();
     }
 
     function adressecontrole(){
-      const adressesec = formaddress;
+      const adressesec = formaddress.value;
       if(/^[A-Za-z0-9|\s]+$/.test(adressesec)){
       return true;  
       }else{
@@ -253,7 +253,7 @@ main();
 
     //Pour la ville
     function citycontrole(){
-      const citysec = formcity;
+      const citysec = formcity.value;
       if(/^[A-Za-z|\s]+$/.test(citysec)){
       return true;  
       }else{
@@ -264,7 +264,7 @@ main();
 
     //Pour l'email
     function Emailcontrol(){
-      const emailsec = formemail;
+      const emailsec = formemail.value;
       if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailsec)){
           return true;
         }else{
@@ -280,29 +280,26 @@ main();
 
         const order = {
           contact: {
-          firstName : formfirstName,
-          lastName : formlastName,
-          city : formcity,
-          address : formaddress,
-          email : formemail,
+          firstName : formfirstName.value,
+          lastName : formlastName.value,
+          city : formcity.value,
+          address : formaddress.value,
+          email : formemail.value,
         },
-          products : [objJson],
+          products : productsIDacheté,
         }
-
+//--------------------
         const options = {
           method: "POST",
           body: JSON.stringify(order),
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: { "Content-Type": "application/json" },
         };
-//--------------------
-
-
 
       // Envoie de la requête avec l'en-tête. On changera de page avec un localStorage qui ne contiendra plus que l'order id et le prix.
       fetch('http://localhost:3000/api/products/order', options)
         .then((response) => response.json())
         .then((data) => {
-          //localStorage.clear();
+          localStorage.clear();
           console.log(data)
           localStorage.setItem("orderId", data.orderId);
 
