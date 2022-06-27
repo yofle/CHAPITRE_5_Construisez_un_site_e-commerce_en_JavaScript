@@ -288,11 +288,12 @@ main();
         },
           products : productsIDacheté,
         }
+        console.log('order------------', order);
 //--------------------
         const options = {
           method: "POST",
           body: JSON.stringify(order),
-          headers: { "Content-Type": "application/json" },
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
         };
 
       // Envoie de la requête avec l'en-tête. On changera de page avec un localStorage qui ne contiendra plus que l'order id et le prix.
@@ -300,7 +301,7 @@ main();
         .then((response) => response.json())
         .then((data) => {
           localStorage.clear();
-          console.log(data)
+          console.log('DATA', data)
           localStorage.setItem("orderId", data.orderId);
 
           //  On peut commenter cette ligne pour vérifier le statut 201 de la requête fetch. Le fait de préciser la destination du lien ici et non dans la balise <a> du HTML permet d'avoir le temps de placer les éléments comme l'orderId dans le localStorage avant le changement de page.
