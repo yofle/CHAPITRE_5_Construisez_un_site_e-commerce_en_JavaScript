@@ -1,4 +1,4 @@
-let objLinea =localStorage.getItem("product-ID")
+let objLinea =localStorage.getItem("product_ID")
 let objJson = JSON.parse(objLinea); 
 
 main();
@@ -14,7 +14,7 @@ main();
   function createcart() {
 
     // Si le tableau copié du localStorage contient au moins un objet, on affiche le panier et on supprime le message d'erreur.
-    if (localStorage.getItem("product-ID")) {
+    if (localStorage.getItem("product_ID")) {
     }
 
     for (let produit in objJson) {
@@ -123,7 +123,7 @@ main();
         && (élément.color !== id_selectionner_suppression));//tri en fonction de la couleur et de l'id
 
         //Envoie du changement au local storage
-        localStorage.setItem("product-ID", JSON.stringify(objJson))
+        localStorage.setItem("product_ID", JSON.stringify(objJson))
 
         //Actualiser le changement 
         alert("Ce produit à été supprimer");
@@ -150,6 +150,17 @@ main();
       // Transformer en nombre chaque valeur du tableau
       QuantitéTotalPanier = QuantitéTotalPanier.map((x) => parseFloat(x));
 
+      let changement = document.querySelector(".ForCalculateQuantity")
+      let resultat = changement.value;
+      changement.addEventListener('change', () =>{
+
+        //------------------------------------------
+
+      });
+      localStorage.setItem("product_ID", JSON.stringify(objJson));
+      console.log("changement", changement);
+      console.log("res", resultat);
+
       // Additionner les valeurs du tableau pour avoir le prix total
       const calculquantité = (acc, currentVal) => acc + currentVal;
       QuantitéTotalPanier = QuantitéTotalPanier.reduce(calculquantité);
@@ -157,22 +168,6 @@ main();
       //Insérer dans le html
       let QuantitéFinale = document.querySelector("#totalQuantity");
       QuantitéFinale.innerHTML = QuantitéTotalPanier;
-  //-------------------------------changequantity--------------------------------
-
-      let changequantity = document.querySelector("#totalQuantity");
-      changequantity.addEventListener('change', () => {
-        if (sofaquantity.value > 0 && sofaquantity.value < 100) {
-          
-          //... création du produit qui sera ajouté au panier 
-          let change = {
-            quantity: sofaquantity.value,
-          };
-          arrayProductsInCart.push(change); //on ajoute avec .push le produit au tableau
-          localStorage.setItem("product-ID", JSON.stringify(arrayProductsInCart));
-        }
-        window.location.href = "cart.html" ;
-      })
-    
 
   //-------------------------------price--------------------------------
 

@@ -22,6 +22,7 @@ main();
 function main() {
   getproducts();
   gotoCart();
+  //Nodoublon();
 }
 
 //permet le dialogue avec l'API
@@ -78,18 +79,32 @@ function getproducts() {
             image: (productimg.src),
             _id: id,
           };
+          console.log("test",productAdded);
+
     
           //Tableau du localstorage
           let arrayProductsInCart = [];
+          console.log("tableau ooooo", arrayProductsInCart);
 
         // Si le localStorage existe, on récupère son contenu (parse) , on l'insère dans le tableau arrayProductsInCart, puis on le renvoit vers le localStorage avec le nouveau produit ajouté.
-        if (localStorage.getItem("product-ID") !== null) {
-            arrayProductsInCart = JSON.parse(localStorage.getItem("product-ID"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
+        if (localStorage.getItem("product_ID") !== null) {
+            arrayProductsInCart = JSON.parse(localStorage.getItem("product_ID"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
           } 
 
+          let foundProduct = arrayProductsInCart.find(p => p._id == productAdded._id ) 
+          && arrayProductsInCart.find(p => p.color == productAdded.color );
+
+          if (foundProduct != undefined ){
+            foundProduct.quantity++;
+            alert("Vous avez déjà ajouté ce produit au Panier")
+          }else{
+            productAdded.quantity = sofaquantity.value
+            arrayProductsInCart.push(productAdded); //on ajoute avec .push le produit au tableau
+          }
+
         //Ajout des produits au panier
-        arrayProductsInCart.push(productAdded); //on ajoute avec .push le produit au tableau
-        localStorage.setItem("product-ID", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
+        
+        localStorage.setItem("product_ID", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
 
         //Actualiser le changement 
         alert("Ce produit à été ajouté au panier");
@@ -106,3 +121,14 @@ function getproducts() {
       }
     });
   }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
