@@ -73,7 +73,7 @@ function getproducts() {
           //... création du produit qui sera ajouté au panier 
           let productAdded = {
             name: producttitle.innerHTML,
-            price: (productPrice.innerHTML * sofaquantity.value),
+            price: (productPrice.innerHTML),
             quantity: sofaquantity.value,
             color: (document.querySelector("select").value),
             image: (productimg.src),
