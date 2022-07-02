@@ -5,10 +5,12 @@ function main() {
 }
 
 function displayOrderIdAndPrice() {
-  const orderId = document.querySelector("#orderId");
   
-  orderId.innerText = localStorage.getItem("orderId");
+  orderId.textContent = localStorage.getItem("orderId");
+
+  console.log("eeee",localStorage.getItem("orderId"));
+  console.log("aaaaaa",orderId);
 
   // On vide le localStorage pour recommencer plus tard le processus d'achat
-  localStorage.clear(); 
+  //localStorage.clear(); 
 }

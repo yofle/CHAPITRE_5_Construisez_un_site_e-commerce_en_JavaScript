@@ -1,11 +1,14 @@
 let objLinea =localStorage.getItem("product_ID")
 let objJson = JSON.parse(objLinea); 
 
+console.log("objjson",objJson)
+
 main();
 
   function main() {
     createcart();
     SupprProductCart();
+    changeData();
     PriceQuantity();
     Formulaire ();
     
@@ -155,20 +158,6 @@ main();
       let QuantitéFinale = document.querySelector("#totalQuantity");
       QuantitéFinale.innerHTML = QuantitéTotalPanier;
 
-//____________________
-      var changement = document.querySelector(".ForCalculateQuantity")
-      let resultat = changement.value;
-      changement.addEventListener('change', () =>{
-//---------------------------------
-        alert('alerttte')
-        
-//----------------------------------------------------
-      
-    });
-      console.log("changement", changement);
-      console.log("res", resultat);
-
-
 
   //-------------------------------priceTotal--------------------------------
 
@@ -195,6 +184,57 @@ main();
       let Prixfinal = document.querySelector("#totalPrice");
       Prixfinal.innerHTML = prixTotalPanier;
   }
+
+
+  //fonction qui gere le changement de quantiter est de prix dans le pannier
+  function changeData(){
+
+    //selecteur de l'input
+    let quantityInput = document.querySelectorAll(".ForCalculateQuantity");
+
+      //boucle qui recupere le total du panier
+      for(let d = 0; d < quantityInput.length; d++){
+
+        //event qui detect des changement sur l'input 
+        quantityInput[d].addEventListener("change", (e)=>{
+        e.preventDefault();
+
+        //variable quantité de base
+        let qty = quantityInput[d].value;
+
+        console.log(qty);
+
+          //si la quantité est egale a 0 on demande la suppresion via une fonction
+          if(qty == 0) delData();
+
+          //si la quantité est superieur ou egale a 1 et inferieur ou egale a 100 on recalcule le total quantité est le total prix
+          if (qty >= 1 && qty <= 100){
+
+          objJson[d].quantity = quantityInput[d].value;
+          console.log(objJson[d].quantity);
+
+
+          // on ajoute les nouvelles information au local storage
+          localStorage.setItem('product_ID', JSON.stringify(objJson));
+          }
+
+          console.log("test #10: gere dynamiquement la mise a jour du panier: OK");
+          
+          // puis on refresh la page
+          location.reload();
+
+      })
+    } 
+  }
+
+  // simulation du click sur le bouton supprimer (pannier <0)
+    function delData(){
+      var evt = document.createEvent("MouseEvents");
+      evt.initMouseEvent("click");
+      document.querySelector(".deleteItem").dispatchEvent(evt);
+      }
+
+
 
   function Formulaire () { 
     //stockage des information du formulaire dans le localStorage
@@ -269,45 +309,138 @@ main();
 
       if(FirstNamecontrole() && lastNamecontrole() && citycontrole() && Emailcontrol() && adressecontrole()){
 
-        let productsIDacheté = [];
-        productsIDacheté.push(objJson);
-
-        const order = {
-          contact: {
+        //ajout d'un event click pour detecter le bouton commander!
+        btncommander.addEventListener('click',(e)=>{
+          e.preventDefault();
+          //on verifie si les champ on etait remplis
+          if(formfirstName.value == "" ||
+          formlastName.value == "" ||
+          formaddress.value == "" ||
+          formcity.value == "" ||
+          formemail.value == "" ) {
+          alert('Veuillez renseigner ces champ.')
+          //si erreur on indique une erreur puis on ne reload pas la page
+          window.onbeforeunload;
+          return;
+          }
+          // creation d'un objet contenant les infos de l'utilisateur
+          const contact ={
           firstName : formfirstName.value,
           lastName : formlastName.value,
-          city : formcity.value,
           address : formaddress.value,
-          email : formemail.value,
-        },
-          products : productsIDacheté,
-        }
-        console.log('order------------', order);
-//--------------------
-        const options = {
+          city : formcity.value,
+          email : formemail.value
+          }
+          console.log("1",contact );
+          
+          //tableaux pour stocker les Id des produits 
+          let products = [];
+
+          
+  
+          //boucle foreach qui recuper l'order id
+          objJson.forEach(order => {products.push(order)});
+
+          console.log("2", objJson);
+          console.log("3",products );
+          alert("aiiir")
+          
+          //objet qui ajout l'objet contact plus d'id 
+          const order = { contact , products,};
+
+          console.log("4", order );
+          alert("aiiiryyyyyy")
+
+
+          
+          // je fais appel à l'api order pour envoyer mes tableaux et je redirige vers la page de confirmation
+          const promise01 = fetch('http://localhost:3000/api/products/order',{
           method: "POST",
-          body: JSON.stringify(order),
-          headers: { "Accept": "application/json", "Content-Type": "application/json" },
-        };
+          body : JSON.stringify(order),
+          headers :{'Content-type':'application/json',
+          },
+          
+          });
+          promise01.then(async(response)=>{
+            try{
 
-      // Envoie de la requête avec l'en-tête. On changera de page avec un localStorage qui ne contiendra plus que l'order id et le prix.
-      fetch('http://localhost:3000/api/products/order', options)
-        .then((response) => response.json())
-        .then((data) => {
-          localStorage.clear();
-          console.log('DATA', data)
-          localStorage.setItem("orderId", data.orderId);
+              console.log("reponse", response)
 
-           document.location.href = "confirmation.html";
-        })
-        .catch((err) => {
-          alert("Il y a eu une erreur : " + err);
-        });
-
+              const contenu = await response.json();
+              console.log("contenu",contenu)
+              alert("YTU")
+            }catch(e){
+              console.log(e);
+            }
+          })
+          
+          })
 //-------------------------
       }
     })
   }
+
+
+
+
+  /* 
+
+  //ajout d'un event click pour detecter le bouton commander!
+formData.submit.addEventListener('click',(e)=>{
+e.preventDefault();
+//on verifie si les champ on etait remplis
+if(formData.firstName.value == "" ||
+formData.lastName.value == "" ||
+formData.address.value == "" ||
+formData.city.value == "" ||
+formData.email.value == "" ) {
+alert('Veuillez renseigner ces champ.')
+//si erreur on indique une erreur puis on ne reload pas la page
+window.onbeforeunload;
+return;
+}
+// creation d'un objet contenant les infos de l'utilisateur
+const contact ={
+firstName : formData.firstName.value,
+lastName : formData.lastName.value,
+address : formData.address.value,
+city : formData.city.value,
+email : formData.email.value
+}
+
+//tableaux pour stocker les Id des produits 
+let products = [];
+
+//boucle foreach qui recuper l'orde rid
+storage.forEach(order => {
+products.push(order.id)
+});
+
+//objet qui ajout l'objet contact plus d'id 
+let order = { contact , products};
+
+// je fais appel à l'api order pour envoyer mes tableaux et je redirige vers la page de confirmation
+fetch(('http://localhost:3000/api/products/order'),{
+method: "POST",
+headers :{'Accept':'application/json','Content-type':'application/json'
+},
+body : JSON.stringify(order)
+})
+.then(res =>{
+console.log("test #11: recuperation de l'api order: OK");
+return res.json();
+})
+.then((data)=>{
+window.location.href =`confirmation.html?orderId=${data.orderId}`;
+})
+.catch((error)=>{
+console.log("test #11: recuperation de l'api order: erreur");
+alert(error);
+})
+
+})
+}
+  */
 
 
     
