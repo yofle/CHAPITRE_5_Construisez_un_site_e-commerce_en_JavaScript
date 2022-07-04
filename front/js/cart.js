@@ -339,39 +339,37 @@ main();
           
   
           //boucle foreach qui recuper l'order id
-          objJson.forEach(order => {products.push(order)});
+          objJson.forEach(order => {products.push(order._id)});
+
+          //storage.forEach(order => {products.push(order.id)});
 
           console.log("2", objJson);
           console.log("3",products );
-          alert("aiiir")
           
           //objet qui ajout l'objet contact plus d'id 
-          const order = { contact , products,};
+          const order = { contact , products};
 
           console.log("4", order );
-          alert("aiiiryyyyyy")
 
 
           
           // je fais appel à l'api order pour envoyer mes tableaux et je redirige vers la page de confirmation
-          const promise01 = fetch('http://localhost:3000/api/products/order',{
+          fetch(('http://localhost:3000/api/products/order'),{
           method: "POST",
-          body : JSON.stringify(order),
-          headers :{'Content-type':'application/json',
-          },
-          
-          });
-          promise01.then(async(response)=>{
-            try{
-
-              console.log("reponse", response)
-
-              const contenu = await response.json();
-              console.log("contenu",contenu)
-              alert("YTU")
-            }catch(e){
-              console.log(e);
-            }
+          headers :{'Accept':'application/json','Content-type':'application/json'},
+          body : JSON.stringify(order)
+          })
+          .then(res =>{
+          console.log("test #11: recuperation de l'api order: OK");
+          return res.json();
+          })
+          .then((data)=>{
+          console.log("ggg",data);
+          window.location.href =`confirmation.html?orderId=${data.orderId}`
+          })
+          .catch((error)=>{
+          console.log("test #11: recuperation de l'api order: erreur");
+          alert(error);
           })
           
           })
@@ -383,64 +381,8 @@ main();
 
 
 
-  /* 
-
-  //ajout d'un event click pour detecter le bouton commander!
-formData.submit.addEventListener('click',(e)=>{
-e.preventDefault();
-//on verifie si les champ on etait remplis
-if(formData.firstName.value == "" ||
-formData.lastName.value == "" ||
-formData.address.value == "" ||
-formData.city.value == "" ||
-formData.email.value == "" ) {
-alert('Veuillez renseigner ces champ.')
-//si erreur on indique une erreur puis on ne reload pas la page
-window.onbeforeunload;
-return;
-}
-// creation d'un objet contenant les infos de l'utilisateur
-const contact ={
-firstName : formData.firstName.value,
-lastName : formData.lastName.value,
-address : formData.address.value,
-city : formData.city.value,
-email : formData.email.value
-}
-
-//tableaux pour stocker les Id des produits 
-let products = [];
-
-//boucle foreach qui recuper l'orde rid
-storage.forEach(order => {
-products.push(order.id)
-});
-
-//objet qui ajout l'objet contact plus d'id 
-let order = { contact , products};
-
-// je fais appel à l'api order pour envoyer mes tableaux et je redirige vers la page de confirmation
-fetch(('http://localhost:3000/api/products/order'),{
-method: "POST",
-headers :{'Accept':'application/json','Content-type':'application/json'
-},
-body : JSON.stringify(order)
-})
-.then(res =>{
-console.log("test #11: recuperation de l'api order: OK");
-return res.json();
-})
-.then((data)=>{
-window.location.href =`confirmation.html?orderId=${data.orderId}`;
-})
-.catch((error)=>{
-console.log("test #11: recuperation de l'api order: erreur");
-alert(error);
-})
-
-})
-}
-  */
+  
 
 
-    
+
+
