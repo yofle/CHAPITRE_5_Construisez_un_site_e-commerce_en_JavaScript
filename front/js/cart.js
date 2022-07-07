@@ -5,7 +5,7 @@ console.log("objjson",objJson)
 
 main();
 
-  function main() {
+  function main() {//Donne l'ordre d'exécution des fonctions
     createcart();
     SupprProductCart();
     changeData();
@@ -14,6 +14,9 @@ main();
     
   }
 
+  
+
+//Création les emplacements HTML, pour les informations des produits ajoutés au panier, grâce au DOM
   function createcart() {
 
     // Si le tableau copié du localStorage contient au moins un objet, on affiche le panier .
@@ -58,13 +61,13 @@ main();
         let productcolor = document.createElement("p");
         productdescription.appendChild(productcolor);
         productcolor.innerHTML = objJson[produit].color;
-
+        
         //div article/englobe1/description/price
         let productprice = document.createElement("p");
         productdescription.appendChild(productprice);
         productprice.classList.add("ForCalculatePrice");
         productprice.innerHTML = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format((objJson[produit].price));//Afficher le prix en euros
-
+       
         //div article/englobe1/englobe2
         let englobe2 = document.createElement("div");
         englobe1.appendChild(englobe2);
@@ -104,7 +107,7 @@ main();
       }  
    
   }
-
+//Organise la suppression des produits non désirés dans le panier
   function SupprProductCart() {
 
     //bouton supprimer l'article
@@ -134,7 +137,7 @@ main();
     }
   }
 
- 
+ //Calcul de la quantité Totale et du Prix total de tout les produits dans le panier
   function PriceQuantity(){
   //-------------------------------quantity--------------------------------
     let QuantitéTotalPanier =[];
@@ -186,7 +189,7 @@ main();
   }
 
 
-  //fonction qui gere le changement de quantiter est de prix dans le pannier
+  //fonction qui gere le changement de quantité des produits lors de l'utilisation de l'input
   function changeData(){
 
     //selecteur de l'input
@@ -204,10 +207,7 @@ main();
 
         console.log(qty);
 
-          //si la quantité est egale a 0 on demande la suppresion via une fonction
-          if(qty == 0) delData();
-
-          //si la quantité est superieur ou egale a 1 et inferieur ou egale a 100 on recalcule le total quantité est le total prix
+          //si la quantité est superieur ou egale à 1 et inferieur ou egale a 100 on recalcule le total quantité est le total prix
           if (qty >= 1 && qty <= 100){
 
           objJson[d].quantity = quantityInput[d].value;
@@ -218,8 +218,6 @@ main();
           localStorage.setItem('product_ID', JSON.stringify(objJson));
           }
 
-          console.log("test #10: gere dynamiquement la mise a jour du panier: OK");
-          
           // puis on refresh la page
           location.reload();
 
@@ -227,21 +225,13 @@ main();
     } 
   }
 
-  // simulation du click sur le bouton supprimer (pannier <0)
-    function delData(){
-      var evt = document.createEvent("MouseEvents");
-      evt.initMouseEvent("click");
-      document.querySelector(".deleteItem").dispatchEvent(evt);
-      }
+  //Fonction qui permet la validation du formulaire et si validation alors envoie avec la requête POST de order, et renvoie à la page confirmation
+  function Formulaire () {
 
-
-
-  function Formulaire () { 
     //stockage des information du formulaire dans le localStorage
     const btncommander = document.querySelector("#order");
     
-    //Récupération des valeurs du formulaires
-        
+    //Récupération des valeurs du formulaires 
     let formfirstName =document.querySelector("#firstName");
     let formlastName = document.querySelector("#lastName");
     let formaddress = document.querySelector("#address");
@@ -251,7 +241,7 @@ main();
     btncommander.addEventListener("click", (event)=>{
     event.preventDefault();
 
-    //Paramètre du formulaire
+    //---------------------------------------Paramètre du formulaire---------------------------
 
     //Pour le FirstName
     function FirstNamecontrole(){ 
@@ -307,6 +297,9 @@ main();
         }
     }
 
+    //--------------------------------------------------------------------------------
+
+      //Si les paramètres du formulaire sont respectés alors ...
       if(FirstNamecontrole() && lastNamecontrole() && citycontrole() && Emailcontrol() && adressecontrole()){
 
         //ajout d'un event click pour detecter le bouton commander!
@@ -360,7 +353,6 @@ main();
           body : JSON.stringify(order)
           })
           .then(res =>{
-          console.log("test #11: recuperation de l'api order: OK");
           return res.json();
           })
           .then((data)=>{
@@ -368,7 +360,6 @@ main();
           window.location.href =`confirmation.html?orderId=${data.orderId}`
           })
           .catch((error)=>{
-          console.log("test #11: recuperation de l'api order: erreur");
           alert(error);
           })
           
@@ -377,12 +368,4 @@ main();
       }
     })
   }
-
-
-
-
-  
-
-
-
 

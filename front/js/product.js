@@ -1,6 +1,7 @@
 //permet d'afficher la page produit spécifique à travers l'id
 let params = new URL(document.location).searchParams;
 let id = params.get("id");// le get id permet de recevoir les produits en fonction de leur ID (ici 1 par 1)
+console.log("ttt",id);
 
 //On crait une balise img pour l'img du produit spécifique
 let productImgdiv = document.createElement("img");
@@ -22,10 +23,10 @@ main();
 function main() {
   getproducts();
   gotoCart();
-  //Nodoublon();
 }
 
-//permet le dialogue avec l'API
+
+//permet le dialogue avec l'API pour obtenir les informations produits spécifiquements
 function getproducts() {
     fetch(`http://localhost:3000/api/products/${id}`)//on va pouvoir recevoir spécifiquement chaque produit par ID spécifique
       .then(function (response) {
@@ -58,6 +59,8 @@ function getproducts() {
     }
     });
   }
+   
+  //Création du panier lors de l'ajout d'un produit et enregistrement des informations produits dans le localStorage
   function gotoCart() {
     const addToCartBtn = document.querySelector(".item__content__addButton");
 
@@ -73,8 +76,8 @@ function getproducts() {
           //... création du produit qui sera ajouté au panier 
           let productAdded = {
             name: producttitle.innerHTML,
-            price: (productPrice.innerHTML),
             quantity: sofaquantity.value,
+            price: (productPrice.innerHTML),
             color: (document.querySelector("select").value),
             image: (productimg.src),
             _id: id,
@@ -91,11 +94,12 @@ function getproducts() {
             arrayProductsInCart = JSON.parse(localStorage.getItem("product_ID"));//Récupère les données(getItem) "product" du tableau "arrayProductsInCart"
           } 
 
+          //Empêche les doublons de produit
           let foundProduct = arrayProductsInCart.find(p => p._id == productAdded._id ) 
           && arrayProductsInCart.find(p => p.color == productAdded.color );
 
           if (foundProduct != undefined ){
-            foundProduct.quantity++;
+            foundProduct.quantity++;//si le produit existe alors on augmente sa quantité de 1
             alert("Vous avez déjà ajouté ce produit au Panier")
           }else{
             productAdded.quantity = sofaquantity.value
@@ -103,7 +107,6 @@ function getproducts() {
           }
 
         //Ajout des produits au panier
-        
         localStorage.setItem("product_ID", JSON.stringify(arrayProductsInCart));//stocke les données(setItem) "product" dans le tableau "arrayProductsInCart"
 
         //Actualiser le changement 
